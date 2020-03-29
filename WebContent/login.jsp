@@ -11,12 +11,19 @@
 <body>
 	<h1>Login</h1><br>
 	
-	<c:if test="${param.e != null}">
-		<p>Username or password not correct</p>
-	</c:if>
-	<form action="admin/phone/listPhone.jsp" method="post">
-		<input type="text" name="username" placeholder="username"><br>
-		<input type="password" name="password"><br>
+	<c:choose>
+		<c:when test="${param.e == 1}">
+			<p>You are not an administrator!</p>
+		</c:when>
+		<c:otherwise>
+			<c:if test="${param.e == 2}">
+			<p>Username or password is not correct!</p>	
+			</c:if>
+		</c:otherwise>
+	</c:choose>
+	<form action="/PhoneShop/login" method="post">
+		<input type="text" name="username" placeholder="Enter username"><br>
+		<input type="password" name="password" placeholder="Enter password"><br>
 		<input type="submit" value="Login"><br>
 	</form>
 </body>

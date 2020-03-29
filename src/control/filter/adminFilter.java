@@ -1,6 +1,5 @@
 package control.filter;
 
-import control.dao.AccountDAOImpl;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -13,9 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.Account;
 
-@WebFilter(urlPatterns = {"/admin/*"})
+@WebFilter(urlPatterns = {"/admin/*", "/list-phone"})
 public class adminFilter implements Filter{
 
 	@Override
@@ -31,23 +29,7 @@ public class adminFilter implements Filter{
 			chain.doFilter(request, response);
 		}else
 		{
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
-			if(username != null && password != null)
-			{
-				Account account = AccountDAOImpl.getAccountByUsername(username);
-				if(account != null && account.getPassword().equals(password) && account.getPermission().equals("ROLE_ADMIN"))
-				{
-					httpSession.setAttribute("user", account);
-					chain.doFilter(request, response);
-				}else
-				{
-					resp.sendRedirect("/PhoneShop/login.jsp?e=2");
-				}
-			}else
-			{
-				resp.sendRedirect("/PhoneShop/login.jsp?e=1");
-			}
+			resp.sendRedirect("/PhoneShop/login.jsp?e=1");
 		}
 		
 		

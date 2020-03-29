@@ -7,7 +7,7 @@ public class Phone {
 	private long price;
 	private String phoneCategory;
 	private String vendor;
-	private String decription;
+	private String description;
 	private String shopName;
 	private int shopId;
 	private int vendorId;
@@ -75,11 +75,11 @@ public class Phone {
 	public void setVendor(String vendor) {
 		this.vendor = vendor;
 	}
-	public String getDecription() {
-		return decription;
+	public String getDescription() {
+		return description;
 	}
-	public void setDecription(String decription) {
-		this.decription = decription;
+	public void setDescription(String decription) {
+		this.description = decription;
 	}
 	public String getShopName() {
 		return shopName;
