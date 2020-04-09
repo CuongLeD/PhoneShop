@@ -35,31 +35,126 @@ public class ImageLinkDAOImpl implements DBManipulateInterface<ImageLink>{
 
 	@Override
 	public boolean updateElement(ImageLink e) {
-		// TODO Auto-generated method stub
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "UPDATE TABLE ImagesLink "
+					+ "SET imageLink = ?, isAvatar = ?, phoneId = ? "
+					+ "WHERE imageLinkId = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setString(1, e.getImageLink());
+			preparedStatement.setInt(2, e.isAvatar() == true ? 1 : 0);
+			preparedStatement.setInt(3, e.getPhoneId());
+			preparedStatement.setInt(4, e.getImageLinkId());
+			
+			int affectedRows = preparedStatement.executeUpdate();
+			connection.close();
+			return (affectedRows > 0);
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean deleteElement(ImageLink e) {
-		// TODO Auto-generated method stub
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "DELETE FROM ImageLinks "
+					+ "WHERE imageLinkId=?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setInt(1, e.getImageLinkId());
+			int affectedRows = preparedStatement.executeUpdate();
+			connection.close();
+			if(affectedRows > 0)
+				return true;
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public ImageLink getElementById(int id) {
-		// TODO Auto-generated method stub
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "SELECT * FROM ImagesLink WHERE ImagesLink = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ImageLink imageLink = null;
+			while(resultSet.next())
+			{
+				imageLink = new ImageLink();
+				imageLink.setPhoneId(resultSet.getInt(1));
+				imageLink.setImageLink(resultSet.getString(2));
+				imageLink.setAvatar(resultSet.getInt(3) == 1);
+				imageLink.setPhoneId(resultSet.getInt(4));
+				break;
+			}
+			
+			connection.close();
+			return imageLink;
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public List<ImageLink> getElements(int beginRow, int amount) {
-		// TODO Auto-generated method stub
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "SELECT * FROM ImagesLink LIMIT ?, ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setInt(1, beginRow);
+			preparedStatement.setInt(2, amount);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			List<ImageLink> imageLinks = new  ArrayList<ImageLink>();
+			while(resultSet.next())
+			{
+				ImageLink imageLink = new ImageLink();
+				imageLink.setImageLinkId(resultSet.getInt(1));
+				imageLink.setImageLink(resultSet.getString(2));
+				imageLink.setAvatar(resultSet.getInt(3) == 1);
+				imageLink.setPhoneId(resultSet.getInt(4));
+				imageLinks.add(imageLink);
+			}
+			
+			connection.close();
+			return imageLinks;
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public int amountRows() {
-		// TODO Auto-generated method stub
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "SELECT COUNT(*) FROM ImagesLink";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			int amount = 0;
+			while(resultSet.next())
+				amount = resultSet.getInt(1);
+			
+			connection.close();
+			return amount;
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 		return 0;
 	}
 	

@@ -38,5 +38,10 @@ public class ImageLinkServiceImpl implements DBManipulicateService<ImageLink> {
 		return dbManipulicate.amountRows();
 	}
 	
+	public static List<ImageLink> getByPhoneId(int phoneId)
+	{
+		return ImageLinkDAOImpl.getByPhoneId(phoneId);
+	}
+	
 
 }

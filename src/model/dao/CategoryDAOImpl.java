@@ -1,5 +1,6 @@
 package model.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,9 @@ import java.util.List;
 
 import model.Category;
 
-public class CategoryDAOImpl implements DBManipulateInterface<Category>{
+public class CategoryDAOImpl implements DBManipulateInterface<Category>,
+					SearchInteface<Category>
+{
 
 	@Override
 	public boolean insertElement(Category e) {
@@ -108,7 +111,6 @@ public class CategoryDAOImpl implements DBManipulateInterface<Category>{
 			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
 			preparedStatement.setInt(1, beginRow);
 			preparedStatement.setInt(2, amount);
-			System.out.println(beginRow + " " + amount);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			List<Category> categories = new ArrayList<Category>();
 			while(resultSet.next())
@@ -151,6 +153,84 @@ public class CategoryDAOImpl implements DBManipulateInterface<Category>{
 		}
 		
 		return 0;
+	}
+
+	@Override
+	public Category searchElementByName(String name) {
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "SELECT categoryId, categoryName, categoryDescription "
+					+ "FROM Categories WHERE categoryName = CONVERT(?, BINARY) ";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setString(1,name);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next())
+			{
+				Category Category = new Category();
+				Category.setCategoryId(resultSet.getInt(1));
+				Category.setCategoryName(resultSet.getString(2));
+				Category.setCategoryDescription(resultSet.getString(3));
+				connection.close();
+				return Category;
+			}
+		}catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Category searchById(int id) {
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlProc = "CALL sp_SearchCategoryByName(?)";
+			CallableStatement callableStatement = connection.prepareCall(sqlProc);
+			ResultSet resultSet = callableStatement.executeQuery();
+			connection.close();
+			while(resultSet.next())
+			{
+				Category Category = new Category();
+				Category.setCategoryId(resultSet.getInt(1));
+				Category.setCategoryName(resultSet.getString(2));
+				Category.setCategoryDescription(resultSet.getString(3));
+				
+				return Category;
+			}
+		}catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Category> searchElementsByName(String name) {
+		Connection connection = DBConnection.getConnection();
+		try {
+			String sqlQuery = "SELECT categoryId, categoryName, categoryDescription "
+					+ "FROM Categories WHERE categoryName = '%?%'";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setString(1, name);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			List<Category> categories = new ArrayList<Category>();
+			while(resultSet.next())
+			{
+				Category Category = new Category();
+				Category.setCategoryId(resultSet.getInt(1));
+				Category.setCategoryName(resultSet.getString(2));
+				Category.setCategoryDescription(resultSet.getString(3));
+				categories.add(Category);
+			}
+			connection.close();
+			return categories;
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 

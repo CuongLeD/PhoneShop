@@ -13,7 +13,9 @@
 	
 	<c:choose>
 		<c:when test="${param.e == 1}">
-			<p>You are not an administrator!</p>
+			<p>You are not an administrator<br>
+				Please login again!
+			</p>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${param.e == 2}">
@@ -21,7 +23,7 @@
 			</c:if>
 		</c:otherwise>
 	</c:choose>
-	<form action="/PhoneShop/login" method="post">
+	<form action="/PhoneShop/login" method="post" >
 		<input type="text" name="username" placeholder="Enter username"><br>
 		<input type="password" name="password" placeholder="Enter password"><br>
 		<input type="submit" value="Login"><br>

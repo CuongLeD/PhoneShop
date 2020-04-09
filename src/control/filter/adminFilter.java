@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-@WebFilter(urlPatterns = {"/admin/*", "/list-phone"})
+@WebFilter(urlPatterns = {"/admin/*", "/phone/*"})
 public class adminFilter implements Filter{
 
 	@Override

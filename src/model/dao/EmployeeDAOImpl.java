@@ -7,7 +7,9 @@ import java.util.List;
 
 import model.Employee;
 
-public class EmployeeDAOImpl implements DBManipulateInterface<Employee>{
+public class EmployeeDAOImpl implements DBManipulateInterface<Employee>,
+SearchInteface<Employee>
+{
 
 	@Override
 	public boolean insertElement(Employee e) {
@@ -160,6 +162,24 @@ public class EmployeeDAOImpl implements DBManipulateInterface<Employee>{
 			ex.printStackTrace();
 		}
 		return rows;
+	}
+
+	@Override
+	public Employee searchElementByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Employee searchById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Employee> searchElementsByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

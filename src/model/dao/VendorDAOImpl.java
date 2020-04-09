@@ -1,5 +1,6 @@
 package model.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,9 @@ import java.util.List;
 
 import model.Vendor;
 
-public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
+public class VendorDAOImpl implements DBManipulateInterface<Vendor>,
+										SearchInteface<Vendor>
+{
 
 	@Override
 	public boolean insertElement(Vendor e) {
@@ -68,6 +71,7 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 			preparedStatement.setInt(1, e.getVendorId());
 			
 			boolean result = preparedStatement.executeUpdate() > 0;
+			connection.close();
 			return result;
 		}catch(SQLException ex)
 		{
@@ -86,7 +90,6 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 			preparedStatement.setInt(1, id);
 			
 			ResultSet resultSet = preparedStatement.executeQuery();
-			connection.close();
 			while(resultSet.next())
 			{
 				Vendor vendor = new Vendor();
@@ -95,6 +98,7 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 				vendor.setVendorAddress(resultSet.getString(3));
 				vendor.setVendorPhoneNumber(resultSet.getString(4));
 				vendor.setVendorEmail(resultSet.getString(5));
+				connection.close();
 				return vendor;
 			}
 		}catch(SQLException ex)
@@ -115,7 +119,6 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 			preparedStatement.setInt(2, amount);
 			
 			ResultSet resultSet = preparedStatement.executeQuery();
-			connection.close();
 			List<Vendor> vendors = new ArrayList<Vendor>();
 			while(resultSet.next())
 			{
@@ -127,6 +130,7 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 				vendor.setVendorEmail(resultSet.getString(5));
 				vendors.add(vendor);
 			}
+			connection.close();
 			return vendors;
 		}catch(SQLException ex)
 		{
@@ -142,7 +146,11 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 		{
 			String sqlQuery = "SELECT COUNT(*) FROM Vendors";
 			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-			int amount = preparedStatement.executeQuery().getInt(1);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			int amount = 0;
+			while(resultSet.next())
+				amount = resultSet.getInt(1);
+			connection.close();
 			return amount;
 		}catch(SQLException ex)
 		{
@@ -150,6 +158,93 @@ public class VendorDAOImpl implements DBManipulateInterface<Vendor>{
 		}
 	
 		return 0;
+	}
+
+	@Override
+	public Vendor searchElementByName(String name) {
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "SELECT * FROM Vendors WHERE vendorName = CONVERT(?, BINARY)";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setString(1, name);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next())
+			{
+				Vendor vendor = new Vendor();
+				vendor.setVendorId(resultSet.getInt(1));
+				vendor.setVendorName(resultSet.getString(2));
+				vendor.setVendorAddress(resultSet.getString(3));
+				vendor.setVendorPhoneNumber(resultSet.getString(4));
+				vendor.setVendorEmail(resultSet.getString(5));
+				connection.close();
+				return vendor;
+			}
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+		return null;
+		
+	}
+
+	@Override
+	public Vendor searchById(int id) {
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlQuery = "SELECT * FROM Vendors WHERE vendorId=?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+			preparedStatement.setInt(1, id);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next())
+			{
+				Vendor vendor = new Vendor();
+				vendor.setVendorId(resultSet.getInt(1));
+				vendor.setVendorName(resultSet.getString(2));
+				vendor.setVendorAddress(resultSet.getString(3));
+				vendor.setVendorPhoneNumber(resultSet.getString(4));
+				vendor.setVendorEmail(resultSet.getString(5));
+				connection.close();
+				return vendor;
+			}
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Vendor> searchElementsByName(String name) {
+		Connection connection = DBConnection.getConnection();
+		try
+		{
+			String sqlProc = "CALL sp_SearchVendorByName(?)";
+			CallableStatement callableStatement = connection.prepareCall(sqlProc);
+			callableStatement.setString(1, name);
+					
+			ResultSet resultSet = callableStatement.executeQuery();
+			List<Vendor> vendors = new ArrayList<Vendor>();
+			while(resultSet.next())
+			{
+				Vendor vendor = new Vendor();
+				vendor.setVendorId(resultSet.getInt(1));
+				vendor.setVendorName(resultSet.getString(2));
+				vendor.setVendorAddress(resultSet.getString(3));
+				vendor.setVendorPhoneNumber(resultSet.getString(4));
+				vendor.setVendorEmail(resultSet.getString(5));
+				vendors.add(vendor);
+			}
+			connection.close();
+			return vendors;
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+		return null;
 	}
 
 }

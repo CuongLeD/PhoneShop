@@ -15,6 +15,9 @@ public class Phone {
 	private java.util.List<ImageLink> imageLinks;
 	
 	
+	
+	
+	
 	public int getShopId() {
 		return shopId;
 	}
@@ -87,6 +90,7 @@ public class Phone {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
+	
 	
 	
 

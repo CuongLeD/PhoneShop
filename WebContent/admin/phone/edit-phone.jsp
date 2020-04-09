@@ -6,33 +6,39 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title> Sửa thông tin điện thoại</title>
+<title> Edit Phone</title>
 </head>
 <body>
-<%
-	int phoneId = Integer.valueOf(request.getParameter("id").trim());
-	Phone phone = new PhoneDAOImpl().getElementById(phoneId);
-	request.setAttribute("phone", phone);
-	java.util.List<Category> categories = new CategoryDAOImpl().getElements(0, new CategoryDAOImpl().amountRows());
-	request.setAttribute("categories", categories);
-	
-%>
+	<%@include file="/include/menu.html" %>
 
-	<h1>Thông tin điện thoại</h1><br>
+	<h1>Phone information: <c:out value="${phone.phoneName}" /> </h1><br>
 	
-	<form action='list-phone.jsp' method='post' enctype='multipart/form-data'>
+	<form action='/PhoneShop/phone/edit-phone?id=${phone.phoneId }' method='post' >
 		<table>
 			<tr>
 				<th>Avatar:</th>
 				<td>
 					<c:forEach items="${phone.imageLinks}" var="imageLink" >
-						<c:if test="${imageLink.isAvatar }">
-							<img alt="avatar" src="${imageLink.imageLink }">
+						<c:if test="${imageLink.isAvatar() }">
+							<img alt="avatar" src="${imageLink.imageLink }" height="200" width="200">
 						</c:if>
+					</c:forEach>
+				</td>
+			</tr>
+			<tr>
+				<th>Images:</th>
+				<td>
+					<c:forEach items="${phone.imageLinks}" var="imageLink" >
+							<img  alt="avatar" src="${imageLink.imageLink }" height="100" width="100">
+						
 						
 					</c:forEach>
-					<input type='file' name='fileAvatar'>
 				</td>
+			</tr>
+			
+			<tr>
+				<th>ID: </th>
+				<td> <label for="labPhoneId"> ${phone.phoneId }</label> </td>
 			</tr>
 			<tr>
 				<th> Name: </th>
@@ -59,16 +65,36 @@
 				</td>
 			</tr>
 			<tr>
+				<th> Shop: </th>
+				<td>
+					<select name="selectShop">
+						<c:forEach items="${requestScope.shops}" var="shop">
+							<option <c:if test="${phone.shopName eq shop.shopName }"> selece</c:if> >
+							 	${shop.shopName} 
+							 </option>
+						</c:forEach>
+					</select>
+				</td>
+			</tr>
+			<tr>
 				<th> Vendor: </th>
-				<td> <input type="text" name="txtVendor" value="${phone.vendor}"> </td>
+				<td>
+					<select name="selectVendor">
+						<c:forEach items="${requestScope.vendors}" var="vendor">
+							<option <c:if test="${phone.vendor eq vendor.vendorName}"> select</c:if> >
+									 ${vendor.vendorName} 
+							 </option>
+						</c:forEach>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<th> Description: </th>
 			 	<td> <input type="text" name="txtDescription" value=${phone.description }> </td>
 		 	</tr>
 		 	<tr>
-		 		<th></th>
-				<td><input type="submit" value="Save"></td>
+				<td><input type="submit" value="Edit"></td>
+				<td><a href ="/PhoneShop/phone/list-phone">Cancel</a></td>
 			</tr>
 		</table>
 		

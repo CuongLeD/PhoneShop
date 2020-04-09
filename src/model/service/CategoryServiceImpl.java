@@ -3,39 +3,55 @@ package model.service;
 import java.util.List;
 import model.Category;
 import model.dao.CategoryDAOImpl;
-import model.dao.DBManipulateInterface;
 
-public class CategoryServiceImpl implements DBManipulicateService<Category> {
-	private DBManipulateInterface<Category> dbManipulicate = new CategoryDAOImpl();
+public class CategoryServiceImpl implements DBManipulicateService<Category>,
+	SearchService<Category>
+{
+	private CategoryDAOImpl categoryDAOImpl = new CategoryDAOImpl();
 
 	@Override
 	public boolean insertElement(Category e) {
-		return dbManipulicate.insertElement(e);
+		return categoryDAOImpl.insertElement(e);
 	}
 
 	@Override
 	public boolean updateElement(Category e) {
-		return dbManipulicate.updateElement(e);
+		return categoryDAOImpl.updateElement(e);
 	}
 
 	@Override
 	public boolean deleteElement(Category e) {
-		return dbManipulicate.deleteElement(e);
+		return categoryDAOImpl.deleteElement(e);
 	}
 
 	@Override
 	public Category getElementById(int id) {
-		return dbManipulicate.getElementById(id);
+		return categoryDAOImpl.getElementById(id);
 	}
 
 	@Override
 	public List<Category> getElements(int beginRow, int amount) {
-		return dbManipulicate.getElements(beginRow, amount);
+		return categoryDAOImpl.getElements(beginRow, amount);
 	}
 
 	@Override
 	public int amountRows() {
-		return dbManipulicate.amountRows();
+		return categoryDAOImpl.amountRows();
+	}
+
+	@Override
+	public Category searchElementByName(String name) {
+		return categoryDAOImpl.searchElementByName(name);
+	}
+
+	@Override
+	public Category searchById(int id) {
+		return categoryDAOImpl.searchById(id);
+	}
+
+	@Override
+	public List<Category> searchElementsByName(String name) {
+		return categoryDAOImpl.searchElementsByName(name);
 	}
 	
 

@@ -109,7 +109,6 @@ public class AccountDAOImpl  implements DBManipulateInterface<Account>{
 				account.setUsername(resultSet.getString(1));
 				account.setPassword(resultSet.getString(2));
 				account.setPermission(resultSet.getString(3));
-				System.out.println(account.getPermission());
 			}
 			connection.close();	
 			return account;
