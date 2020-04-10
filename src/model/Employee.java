@@ -10,7 +10,14 @@ public class Employee {
 	private String description;
 	private java.util.Date dateCreate;
 	private String shopName;
+	private boolean status;
 	
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 	public String getShopName() {
 		return shopName;
 	}
